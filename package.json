@@ -1,0 +1,11 @@
+{
+  "name": "songvis",
+  "version": "1.0.0",
+  "description": "A tool for visualizing songs",
+  "main": "server.js",
+  "author": "David Johnson",
+  "dependencies": {
+    "express": "^4.13.0",
+    "morgan": "^1.6.0"
+  }
+}

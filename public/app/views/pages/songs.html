@@ -1,0 +1,13 @@
+<div>
+	<table class="table table-bordered table-striped" ng-show="song.songs">
+		<tr ng-repeat="s in song.songs">
+			<td>{{ s.title }}</td>
+			<td>{{ s.artist_name }}</td>
+			<td><a ng-href="/songs/{{ s.tracks[0].foreign_id}}">{{ s.tracks[0].foreign_id}}</a></td>
+		</tr>
+	</table>
+
+	<div class="alert alert-warning" role="alert" ng-if="song.error">
+		<p> {{ song.error }} </p>
+	</div>
+</div>
