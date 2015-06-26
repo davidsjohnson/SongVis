@@ -5,7 +5,7 @@
  	var vm = this
 
  	vm.searchData = "";
- 	vm.type = "";
+ 	vm.type = "genre";
  	vm.error="";
  	vm.songs = null;
 

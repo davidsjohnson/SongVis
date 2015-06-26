@@ -23,12 +23,15 @@ angular.module('songService', [])
 		return $http.get(apiStr);
 	};
 
-	// get all users
-	songFactory.getTrackData = function(id) {
+	songFactory.getTrackSummary = function(id) {
 
 		var apiStr = URL_ECHONEST_API + "track/profile?api_key=" + API_KEY + "&format=json&id=" + id + "&bucket=audio_summary"
 		return $http.get(apiStr);
 	};
+
+	songFactory.getTrackAnalysis = function(url){
+		return $http.get(url);
+	}
 
 	songFactory.getRelated = function(id){	
 	};

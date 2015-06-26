@@ -1,3 +1,7 @@
+<div class="loading" ng-if="song.processing">
+	<h5>Loading...<span class="glyphicon glyphicon-music text-info spinner"></span></h5>
+</div>
+
 <div>
 	<table class="table table-bordered table-striped" ng-show="song.songs">
 		<tr ng-repeat="s in song.songs">
