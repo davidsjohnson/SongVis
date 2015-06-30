@@ -1,6 +1,8 @@
 var URL_ECHONEST_API = "http://developer.echonest.com/api/v4/";
 var API_KEY= 'RRAUM8UKXJEVAKNM1';
 
+var URL_SPOTIFY_API = "https://api.spotify.com/v1/"
+
 angular.module('songService', [])
 
 .factory('Song', function($http) {
@@ -34,6 +36,14 @@ angular.module('songService', [])
 	}
 
 	songFactory.getRelated = function(id){	
+	};
+
+	songFactory.getSpotifyDetails = function(id){
+
+		// https://api.spotify.com/v1/albums/{id}/tracks
+		id = id.replace("spotify:track:", "");
+		apiStr = URL_SPOTIFY_API + "tracks/" + id;
+		return $http.get(apiStr);
 	};
 	
 	return songFactory;

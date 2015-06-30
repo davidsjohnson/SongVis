@@ -4,11 +4,15 @@
 </div>
 
 <div class="row">
-	<div class="col-md-6 col-md-offset-3" id="main_song">
+	<div class="col-md-6 col-md-offset-3">
 		<h4> {{ song.track.title }}</h4>
 		<h5> {{ song.track.artist }}</h5>
 		<div class="processing" ng-if="song.track_processing">
 			<h6>Loading Track...<span class="glyphicon glyphicon-music text-info spinner"></span></h6>
+		</div>
+		<div id="main_song"></div>
+		<div "preview" ng-show="song.preview_url">
+			<audio  ng-src="{{ song.preview_url | trusted }}" controls></audio>
 		</div>
 	</div>
 </div>

@@ -17,13 +17,11 @@
 
 			.success(function(data) {
 
-				// when all the users come back, remove the processing variable
+				// done processing
 				vm.processing = false;
 
 				// bind the songs that come back
 				vm.songs = data.response.songs;
-
-				console.log(vm.songs[0]);
 		    })
 		    .error(function(data){
 		    	vm.processing = false;
@@ -47,10 +45,12 @@
 
  	vm.processing = true;
  	vm.track_processing = false;
+    vm.spotify_processing = true;
  	vm.error = null;
 
  	vm.track = null;
  	vm.relatedSongs = null;
+    vm.preview_url = null;
 
  	// Getting detailed data requires two calls...
  	// first to get track summary data
@@ -66,7 +66,6 @@
  			Song.getTrackAnalysis(data.response.track.audio_summary.analysis_url)
  				.success(function(data){
  					vm.track.detail = data;
- 					console.log(vm.track);
 
  					generateSongView(vm.track, vm.track.detail, "#main_song");
 
@@ -74,7 +73,8 @@
  				})
  				.error(function(data){
  					vm.track_processing = false;
- 					vm.error =  data.response.status.message;
+ 					vm.error =  data;
+                    console.log(data);
  				});
 
  		})
@@ -83,6 +83,19 @@
  			vm.processing = false;
  			vm.error = data.response.status.message;
  		});
+
+    Song.getSpotifyDetails($routeParams.song_id)
+        .success(function(data){
+
+            vm.spotify_processing = false;
+            vm.preview_url = data.preview_url;
+
+        })
+        .error(function(data){
+
+            vm.spotify_processing = false;
+            vm.error = data.error.message;
+        });
 
  });
 
@@ -290,17 +303,6 @@ function generateSongView(trackInfo, trackData, targetId){
 
             movingX += (bar.duration * barScaleFactor) + barSpace
 
-
-
-            // lineY = h - bottomPadding - (13 * (rectH + pitchPadding) - loudnessPadding) - loudnessMaxH
-            // svg.append("line")
-            //     .attr("x1", sidePadding)
-            //     .attr("y1", lineY)
-            //     .attr("x2", trackData.bars.length * rectW + sidePadding)
-            //     .attr("y2", lineY)
-            //     .attr("stroke", function(d){
-            //         return d3.rgb(150, 150, 150);
-            //     });
 
             // Done drawing boxes now store segment info for next bar...
             for(var i=0;i<12;i++){  //update pitch totals for all 12 pitches
