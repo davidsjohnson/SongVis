@@ -3,6 +3,9 @@ var API_KEY= 'RRAUM8UKXJEVAKNM1';
 
 var URL_SPOTIFY_API = "https://api.spotify.com/v1/"
 
+var URL_SOUNDCLOUD_API = "http://api.soundcloud.com/"
+var SC_API_KEY = "eb9e90c60d35fed9afe8fd7836ac7878"
+
 angular.module('songService', [])
 
 .factory('Song', function($http) {
@@ -10,7 +13,7 @@ angular.module('songService', [])
 	// create a new object
 	var songFactory = {};
 
-	songFactory.search = function(queryStr, type) {
+	songFactory.searchSpotify = function(queryStr, type) {
 		// Generates a list of songs using the Echonest Playlist API
 
 		queryStr = queryStr.replace(" ", "+");
@@ -25,11 +28,47 @@ angular.module('songService', [])
 		return $http.get(apiStr);
 	};
 
-	songFactory.getTrackSummary = function(id) {
+	songFactory.searchSoundCloud = function(queryStr, type){
+
+		queryStr = queryStr.replace(" ", "+");
+		var apiStr = URL_SOUNDCLOUD_API + "tracks?client_id=" + SC_API_KEY;
+		var query_options = "&limit=50&duration[from]=60000&duration[to]=420000";  // limiting tracks to durations from 1 to 7 minutes
+
+		if (type === "genre")
+			apiStr = apiStr + "&genres=" + queryStr + query_options;
+		else if (type === "keyword")
+			apiStr = apiStr + "&q=" + queryStr + query_options;
+
+		return $http.get(apiStr);
+
+	}
+
+	songFactory.getSoundCloudTrack = function(id){
+		var apiStr = URL_SOUNDCLOUD_API + "tracks/"+ id + "?client_id=" + SC_API_KEY;
+		return $http.get(apiStr);
+	}
+
+	songFactory.getTrackSummaryById = function(id) {
 
 		var apiStr = URL_ECHONEST_API + "track/profile?api_key=" + API_KEY + "&format=json&id=" + id + "&bucket=audio_summary"
 		return $http.get(apiStr);
 	};
+
+	songFactory.analyzeTrackByUrl = function(data) {
+
+		var apiStr = URL_ECHONEST_API + "track/upload"
+		data.api_key = API_KEY; // add API key to post data
+		data.url = data.url + "?client_id=" + SC_API_KEY;
+
+		return $http({
+    		url: apiStr,
+   			method: 'POST',
+    		data: "url=" + data.url + "&api_key=" + data.api_key,     // HACK for dealing with Echonest parameter requirements and deserialization of data
+    		headers: {
+        		"Content-Type": "application/x-www-form-urlencoded"
+    		}
+		});
+	}
 
 	songFactory.getTrackAnalysis = function(url){
 		return $http.get(url);

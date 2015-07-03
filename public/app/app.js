@@ -4,4 +4,4 @@ angular.module('songVis', ['app.routes', 'mainCtrl', 'songCtrl', 'songService'])
     return function(url) {
         return $sce.trustAsResourceUrl(url);
     };
-}]);;
+}])

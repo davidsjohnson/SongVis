@@ -3,7 +3,11 @@
 	<h5>Loading...<span class="glyphicon glyphicon-music text-info spinner"></span></h5>
 </div>
 
-<div class="row">
+<div class="alert alert-warning" role="alert" ng-if="song.error">
+	<p> {{ song.error }} </p>
+</div>
+
+<div class="row" ng-if="song.track">
 	<div class="col-md-6 col-md-offset-3">
 		<h4> {{ song.track.title }}</h4>
 		<h5> {{ song.track.artist }}</h5>
@@ -11,8 +15,22 @@
 			<h6>Loading Track...<span class="glyphicon glyphicon-music text-info spinner"></span></h6>
 		</div>
 		<div id="main_song"></div>
-		<div "preview" ng-show="song.preview_url">
+		<div id="preview" ng-show="song.preview_url">
 			<audio  ng-src="{{ song.preview_url | trusted }}" controls></audio>
+		</div>
+	</div>
+</div>
+
+<div class="row" ng-if="song.sc_track">
+	<div class="col-md-6 col-md-offset-3">
+		<h4> {{ song.sc_track.title }}</h4>
+		<h5> {{ song.sc_track.user.username }}</h5>
+		<div class="processing" ng-if="song.track_processing">
+			<h6>Loading Track...<span class="glyphicon glyphicon-music text-info spinner"></span></h6>
+		</div>
+		<div id="main_song"></div>
+		<div id="stream" ng-show="song.sc_stream_url">
+			<audio  ng-src="{{ song.sc_stream_url | trusted }}" controls></audio>
 		</div>
 	</div>
 </div>

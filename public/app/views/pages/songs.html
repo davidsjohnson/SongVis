@@ -11,6 +11,14 @@
 		</tr>
 	</table>
 
+	<table class="table table-bordered table-striped" ng-show="song.sc_songs">
+		<tr ng-repeat="s in song.sc_songs">
+			<td>{{ s.title }}</td>
+			<td>{{ s.user.username }}</td>
+			<td><a ng-href="/songs/{{ s.id }} ">{{ s.id }}</a></td>
+		</tr>
+	</table>
+
 	<div class="alert alert-warning" role="alert" ng-if="song.error">
 		<p> {{ song.error }} </p>
 	</div>
