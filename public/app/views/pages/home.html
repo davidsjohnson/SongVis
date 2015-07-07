@@ -1,28 +1,36 @@
 <div class="jumbotron">
 	<h2>SongVis</h2>
-	<h4>A tool for visualizing Songs</h4>
+	<h5>A tool for visualizing Songs. Start by searching for a Genre or Artist.</h5>
 
 	<form class="form-horizontal" ng-submit="main.search()">
 
 		<div class="form-group">
-			<label class="col-sm-1 control-label">Search</label>
 			<div class="col-sm-6">
 				<input type="text" class="form-control" ng-model="main.searchData">
 			</div>
 			<div class="col-sm-2">
-				<select ng-model="main.type">
-					<option value="genre"> Genre </option>
-					<option value="artist">Artist</option>
+				<select class="form-control" ng-model="main.selected.source" 
+						ng-options="o.source for o in main.options">
+					<option value="" disabled>-- Music Service --</option>
 				</select>
+			</div>
+			<div class="col-sm-2">
+			    <select class="form-control" ng-model="main.selected.type"
+			            ng-options="t.type.name for t in main.selected.source.types">
+			        <option value="" disabled>-- Search Type --</option>
+			    </select>
 			</div>
 		</div>
 
 		<div class="form-group">
-		<div class="col-sm-6">
-			<button type="submit" class="btn btn-success btn-lg btn-block">Find Songs</button>
+			<div class="col-sm-6">
+				<button type="submit" class="btn btn-info btn-lg btn-block">Find Songs</button>
+			</div>
 		</div>
-		</div>
+
+	<div class="alert alert-warning" role="alert" ng-if="main.error">
+		<p> {{ main.error }} </p>
+	</div>
 
 	</form>
-
 </div>
