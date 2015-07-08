@@ -21,7 +21,7 @@
 	</div>
 </div>
 
-<div class="row" ng-if="song.sc_track">
+<!-- <div class="row" ng-if="song.sc_track">
 	<div class="col-md-6 col-md-offset-3">
 		<h4> {{ song.sc_track.title }}</h4>
 		<h5> {{ song.sc_track.user.username }}</h5>
@@ -29,8 +29,23 @@
 			<h6>Loading Track...<span class="glyphicon glyphicon-music text-info spinner"></span></h6>
 		</div>
 		<div id="main_song"></div>
+		<div media-progress-bar width='{{ song.width }}'></div>
 		<div id="stream" ng-show="song.sc_stream_url">
-			<audio  ng-src="{{ song.sc_stream_url | trusted }}" controls></audio>
+			<audio  id="audio" ng-src="{{ song.sc_stream_url | trusted }}" controls></audio>
+		</div>
+	</div>
+</div> -->
+
+<div class="row" ng-if="song.sc_track">
+	<div class="col-md-12">
+		<h4> {{ song.sc_track.title }}</h4>
+		<h5> {{ song.sc_track.user.username }}</h5>
+		<div class="processing" ng-if="song.track_processing">
+			<h6>Loading Track...<span class="glyphicon glyphicon-music text-info spinner"></span></h6>
+		</div>
+		<div track-vis ng-model="song.sc_track.detail"></div>
+		<div id="stream" ng-show="song.sc_stream_url">
+			<audio  id="audio" ng-src="{{ song.sc_stream_url | trusted }}" controls></audio>
 		</div>
 	</div>
 </div>
