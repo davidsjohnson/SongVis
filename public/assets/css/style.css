@@ -20,3 +20,22 @@
    from  { -moz-transform:rotate(0deg); }  
    to    { -moz-transform:rotate(360deg); }
 } 
+
+#progress_bar { 
+   border:1px solid #aaa; 
+   color:#fff; 
+   width:0px;
+   height:10px;
+   font-size: 0px;  /*  Hack to fix issue with progres aligning in progress bar */
+   margin-bottom: 10px;
+   visibility: hidden;
+}
+#progress {
+   background-color:#aaa;
+   height:8px;
+   display:inline-block;
+}
+
+.track {
+   height:50px;
+}
