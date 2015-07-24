@@ -1,6 +1,6 @@
- angular.module('songCtrl', ['songService', 'ngCookies'])
+ angular.module('songCtrl', ['thirdPartyService', 'ngCookies', 'trackService'])
 
- .controller('songsController',function($routeParams, Song){
+ .controller('songsController',function($routeParams, ThirdParty, Track){
 
  	var vm = this
 
@@ -18,7 +18,7 @@
 
         if (vm.source === "spotify"){
 
-    		Song.searchSpotify(vm.query, vm.type)
+    		ThirdParty.searchSpotify(vm.query, vm.type)
 
     			.success(function(data) {
 
@@ -35,7 +35,7 @@
         }
         else if (vm.source === "soundcloud"){
       
-            Song.searchSoundCloud(vm.query, vm.type)
+            ThirdParty.searchSoundCloud(vm.query, vm.type)
          
                 .success(function(data) {
          
@@ -52,9 +52,42 @@
 
 
         }
+        else if (vm.source === "songvis"){
+
+            if (vm.type === "artist") {
+
+                Track.artist(vm.query)
+                    .success(function(data){
+                        vm.processing = false;
+                        vm.sv_songs = data;
+                    })
+                    .error(function(data){
+                        vm.processing = false;
+                        vm.error="Error searching SongVis for " + vm.query + ". Err: " + data;
+                    });
+            }
+            else if (vm.type === "genre"){
+                
+                Track.genre(vm.query)
+                    .success(function(data){
+                        vm.processing = false;
+                        vm.sv_songs = data;
+                    })
+                    .error(function(data){
+                        vm.processing = false;
+                        "Error searching SongVis for " + vm.query + ". Err: " + data;
+                    });
+
+            }
+            else{
+                vm.processing = false;
+                vm.error = "Invalid SongVis search type.  Using the SongVis service only Artist and Genre searches are available."
+            }
+
+        }
         else{
             vm.processing = false;
-            vm.error = "Invalid Music Service. Only Spotify and SoundCloud are currently supported";     
+            vm.error = "Invalid Music Service. Only SongVis, Spotify and SoundCloud are currently supported";     
         }
     }
 	else{
@@ -65,7 +98,7 @@
 })
 
 
-.controller('songController', function($routeParams, Song){
+.controller('songController', function($routeParams, ThirdParty, Track){
 	// Controller to handle Echonest track data. 
 	// First makes a call to request the audio summary then makes another call 
 	// to get the full detailed track data.
@@ -96,7 +129,7 @@
         vm.spotify_processing = true;
         // Getting detailed data requires two calls...
         // first to get track summary data
-     	Song.getTrackSummaryById($routeParams.song_id).
+     	ThirdParty.getTrackSummaryById($routeParams.song_id).
      		success(function(data){
 
      			vm.processing = false;
@@ -105,16 +138,14 @@
      			vm.track.detail = null;
 
      			//second to get detailed data using analysis_url
-     			Song.getTrackAnalysis(data.response.track.audio_summary.analysis_url)
+     			ThirdParty.getTrackAnalysis(data.response.track.audio_summary.analysis_url)
      				.success(function(data){
      					vm.track.detail = data;
-
      					vm.track_processing = false;
      				})
      				.error(function(data){
      					vm.track_processing = false;
      					vm.error =  data;
-                        console.log(data);
      				});
 
      		})
@@ -124,7 +155,7 @@
      			vm.error = data.response.status.message;
      		});
 
-        Song.getSpotifyDetails($routeParams.song_id)
+        ThirdParty.getSpotifyDetails($routeParams.song_id)
             .success(function(data){
 
                 vm.spotify_processing = false;
@@ -136,65 +167,84 @@
                 vm.spotify_processing = false;
                 vm.error = data.error.message;
             });
-        }
-        else{
-            //if not spotify then must be a soundcloud ID
-            vm.processing = false;
+    }
+    else if ($routeParams.song_id.indexOf("soundcloud") != -1 ){   // is this is soundcloud ID?
+        song_id = $routeParams.song_id.replace("soundcloud:", "");
 
-            // first get track info from SoundCloud
-            Song.getSoundCloudTrack($routeParams.song_id)
-                .success(function(data){
-                    vm.processing = false;
-                    vm.track_processing = true;
-                    vm.sc_track = data;
+        // first get track info from SoundCloud
+        ThirdParty.getSoundCloudTrack(song_id)
+            .success(function(data){
+                vm.processing = false;
+                vm.track_processing = true;
+                vm.sc_track = data;
 
-                    console.log(data);
+                console.log(data);
 
-                    var post_data = {}
-                    post_data.url = vm.sc_track.stream_url;
-                    vm.sc_stream_url = vm.sc_track.stream_url + "?client_id=eb9e90c60d35fed9afe8fd7836ac7878"
+                var post_data = {}
+                post_data.url = vm.sc_track.stream_url;
+                vm.sc_stream_url = vm.sc_track.stream_url + "?client_id=eb9e90c60d35fed9afe8fd7836ac7878"
 
-                    // Then send to analyzer for track analysis
-                    Song.analyzeTrackByUrl(post_data)
-                        .success(function(data){
-                            vm.sc_track.info = data.response.track;
+                // Then send to analyzer for track analysis
+                ThirdParty.analyzeTrackByUrl(post_data)
+                    .success(function(data){
+                        vm.sc_track.info = data.response.track;
+                    
+                        ThirdParty.getTrackSummaryById(vm.sc_track.info.id)
+                            .success(function(data){
+
+                                vm.sc_track.en_track = data.response.track;
+                               
+                                //final get detailed data using analysis_url
+                                ThirdParty.getTrackAnalysis(data.response.track.audio_summary.analysis_url)
+                                    .success(function(data){
+                                        vm.sc_track.detail = data;
+                                        vm.track_processing = false;
+                                    })
+                                    .error(function(data){
+                                        vm.track_processing = false;
+                                        vm.error = "Error accessing Echnonest: " + data;
+                                    });
+                            })
+                            .error(function(data){
+                                vm.track_processing = false;
+                                vm.error = "Error accessing Echnonest: " + data;
+                            });
                         
-                            Song.getTrackSummaryById(vm.sc_track.info.id)
-                                .success(function(data){
-
-                                    vm.sc_track.en_track = data.response.track;
-                                   
-                                    //final get detailed data using analysis_url
-                                    Song.getTrackAnalysis(data.response.track.audio_summary.analysis_url)
-                                        .success(function(data){
-                                            vm.sc_track.detail = data;
-                                            vm.track_processing = false;
-                                        })
-                                        .error(function(data){
-                                            vm.track_processing = false;
-                                            vm.error =  data;
-                                            console.log(data);
-                                        });
-                                })
-                                .error(function(data){
-                                    vm.track_processing = false;
-                                    vm.error = "Error accessing Echnonest: " + data;
-                                });
-                            
-                            
-                        })
-                        .error(function(data){
-                            vm.track_processing = false;
-                            vm.error = "Error accessing Echnonest: " + data;
-                        });
+                        
+                    })
+                    .error(function(data){
+                        vm.track_processing = false;
+                        vm.error = "Error accessing Echnonest: " + data;
+                    });
 
 
-                })
-                .error(function(data){
-                    vm.track_processing = false;
-                    vm.error = "Error accessing SoundCloud: " + data.errors[0].error_message;
-                });
+            })
+            .error(function(data){
+                vm.track_processing = false;
+                vm.error = "Error accessing SoundCloud: " + data.errors[0].error_message;
+            });
 
-        }
+    }
+    else if ($routeParams.song_id.indexOf("songvis") != -1 ){   // is this is songvis ID?
+
+        vm.processing = false;
+        vm.track_processing = true;
+        song_id = $routeParams.song_id.replace("songvis:", "");
+
+        Track.get(song_id)
+            .success(function(data){
+
+                vm.sv_track = data
+                vm.track_processing = false;
+            })
+            .error(function(data){
+                vm.track_processing = false;
+                vm.error = "Error accessing SongVis: " + data;
+            });
+
+    }
+    else{
+        vm.error = "Invalid ID.  Song ID must contain either spotify, soundcloud, or songvis"
+    }
 
  });

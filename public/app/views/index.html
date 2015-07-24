@@ -31,11 +31,13 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-route.js"></script>
 
 	<!-- Add Angular controllers here -->
-	<script src="app/controllers/mainCtrl.js"></script>
+	<script src="app/controllers/searchCtrl.js"></script>
 	<script src="app/controllers/songCtrl.js"></script>
+	<script src="app/controllers/mainCtrl.js"></script>
 
 	<!-- Add Angular services here-->
-	<script src="app/services/songService.js"></script>
+	<script src="app/services/thirdPartyService.js"></script>
+	<script src="app/services/trackService.js"></script>
 
 	<!-- Add main Angular app files here (app.js and app.routes.js)-->
 	<script src="app/app.js"></script>
@@ -48,7 +50,7 @@
 <body ng-app="songVis">
 
 <!-- NAVBAR -->
-<header ng-controller="mainController as main">
+<header ng-controller="searchController as search">
 	<nav class="navbar navbar-default">
 	<div class="container">
 		<div class="navbar-header">
@@ -57,16 +59,16 @@
 			</a>
 		</div>
 		<div>
-		    <form class="navbar-form navbar-right" role="search" ng-submit="main.search()">
+		    <form class="navbar-form navbar-right" role="search" ng-submit="search.search()">
 
 	    		<div class="form-group">
-						<input type="text" class="form-control" ng-model="main.searchData" placeholder="Search">
-						<select class="form-control" ng-model="main.selected.source" 
-								ng-options="o.source for o in main.options">
+						<input type="text" class="form-control" ng-model="search.searchData" placeholder="Search">
+						<select class="form-control" ng-model="search.selected.source" 
+								ng-options="o.source for o in search.options">
 							<option value="" disabled>-- Music Service --</option>
 						</select>
-					    <select class="form-control" ng-model="main.selected.type"
-					            ng-options="t.type.name for t in main.selected.source.types">
+					    <select class="form-control" ng-model="search.selected.type"
+					            ng-options="t.type.name for t in search.selected.source.types">
 					        <option value="" disabled>-- Search Type --</option>
 					    </select>
 				</div>

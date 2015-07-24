@@ -5,8 +5,10 @@
   "main": "server.js",
   "author": "David Johnson",
   "dependencies": {
+    "body-parser": "^1.13.2",
     "cors": "^2.7.1",
     "express": "^4.13.0",
+    "mongoose": "^4.0.8",
     "morgan": "^1.6.0"
   }
 }

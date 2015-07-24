@@ -5,11 +5,18 @@
 
 	$routeProvider
 
-	// Route for home page
+	// default search route
 	.when("/", {
-		templateUrl: 'app/views/pages/home.html',
+		templateUrl: 'app/views/pages/home.html', 
 		controller: 'mainController',
 		controllerAs: 'main'
+	})
+
+	// Route for home page
+	.when("/thirdPartySearch", {
+		templateUrl: 'app/views/pages/thirdPartySearch.html',
+		controller: 'searchController',
+		controllerAs: 'search'
 	})
 	.when("/songs", {
 

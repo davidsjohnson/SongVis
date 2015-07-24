@@ -15,7 +15,15 @@
 		<tr ng-repeat="s in song.sc_songs">
 			<td>{{ s.title }}</td>
 			<td>{{ s.user.username }}</td>
-			<td><a ng-href="/songs/{{ s.id }} ">{{ s.id }}</a></td>
+			<td><a ng-href="/songs/soundcloud:{{ s.id }} ">{{ s.id }}</a></td>
+		</tr>
+	</table>
+
+	<table class="table table-bordered table-striped" ng-show="song.sv_songs">
+		<tr ng-repeat="s in song.sv_songs">
+			<td>{{ s.title }}</td>
+			<td>{{ s.artist}}</td>
+			<td><a ng-href="/songs/songvis:{{ s._id }} ">{{ s._id }}</a></td>
 		</tr>
 	</table>
 
