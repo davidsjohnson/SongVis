@@ -34,3 +34,17 @@
 		</div>
 	</div>
 </div>
+
+<div class="row" ng-if="song.sv_track">
+	<div class="col-md-12">
+		<h4> {{ song.sv_track.title }}</h4>
+		<h5> {{ song.sv_track.artist }}</h5>
+		<div class="processing" ng-if="song.track_processing">
+			<h6>Loading Track...<span class="glyphicon glyphicon-music text-info spinner"></span></h6>
+		</div>
+		<div track-vis ng-model="song.sv_track"></div>
+		<div id="stream" ng-show="song.sv_track.mp3_uri">
+			<audio  id="audio" ng-src="{{ song.sv_track.mp3_uri | trusted }}" controls></audio>
+		</div>
+	</div>
+</div>

@@ -6,14 +6,14 @@ var URL_SPOTIFY_API = "https://api.spotify.com/v1/"
 var URL_SOUNDCLOUD_API = "http://api.soundcloud.com/"
 var SC_API_KEY = "eb9e90c60d35fed9afe8fd7836ac7878"
 
-angular.module('songService', [])
+angular.module('thirdPartyService', [])
 
-.factory('Song', function($http) {
+.factory('ThirdParty', function($http) {
 
 	// create a new object
-	var songFactory = {};
+	var thirdPartyFactory = {};
 
-	songFactory.searchSpotify = function(queryStr, type) {
+	thirdPartyFactory.searchSpotify = function(queryStr, type) {
 		// Generates a list of songs using the Echonest Playlist API
 
 		queryStr = queryStr.replace(" ", "+");
@@ -28,7 +28,7 @@ angular.module('songService', [])
 		return $http.get(apiStr);
 	};
 
-	songFactory.searchSoundCloud = function(queryStr, type){
+	thirdPartyFactory.searchSoundCloud = function(queryStr, type){
 
 		queryStr = queryStr.replace(" ", "+");
 		var apiStr = URL_SOUNDCLOUD_API + "tracks?client_id=" + SC_API_KEY;
@@ -43,18 +43,18 @@ angular.module('songService', [])
 
 	}
 
-	songFactory.getSoundCloudTrack = function(id){
+	thirdPartyFactory.getSoundCloudTrack = function(id){
 		var apiStr = URL_SOUNDCLOUD_API + "tracks/"+ id + "?client_id=" + SC_API_KEY;
 		return $http.get(apiStr);
 	}
 
-	songFactory.getTrackSummaryById = function(id) {
+	thirdPartyFactory.getTrackSummaryById = function(id) {
 
 		var apiStr = URL_ECHONEST_API + "track/profile?api_key=" + API_KEY + "&format=json&id=" + id + "&bucket=audio_summary"
 		return $http.get(apiStr);
 	};
 
-	songFactory.analyzeTrackByUrl = function(data) {
+	thirdPartyFactory.analyzeTrackByUrl = function(data) {
 
 		var apiStr = URL_ECHONEST_API + "track/upload"
 		data.api_key = API_KEY; // add API key to post data
@@ -70,14 +70,14 @@ angular.module('songService', [])
 		});
 	}
 
-	songFactory.getTrackAnalysis = function(url){
+	thirdPartyFactory.getTrackAnalysis = function(url){
 		return $http.get(url);
 	}
 
-	songFactory.getRelated = function(id){	
+	thirdPartyFactory.getRelated = function(id){	
 	};
 
-	songFactory.getSpotifyDetails = function(id){
+	thirdPartyFactory.getSpotifyDetails = function(id){
 
 		// https://api.spotify.com/v1/albums/{id}/tracks
 		id = id.replace("spotify:track:", "");
@@ -85,6 +85,6 @@ angular.module('songService', [])
 		return $http.get(apiStr);
 	};
 	
-	return songFactory;
+	return thirdPartyFactory;
 
 });

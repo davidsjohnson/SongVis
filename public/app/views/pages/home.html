@@ -5,19 +5,16 @@
 	<form class="form-horizontal" ng-submit="main.search()">
 
 		<div class="form-group">
-			<div class="col-sm-6">
-				<input type="text" class="form-control" ng-model="main.searchData">
-			</div>
 			<div class="col-sm-2">
-				<select class="form-control" ng-model="main.selected.source" 
-						ng-options="o.source for o in main.options">
-					<option value="" disabled>-- Music Service --</option>
+				<select class="form-control" ng-model="main.selected.searchType" 
+						ng-options="o.searchType for o in main.options">
+					<option value="" disabled>-- Search By --</option>
 				</select>
 			</div>
 			<div class="col-sm-2">
-			    <select class="form-control" ng-model="main.selected.type"
-			            ng-options="t.type.name for t in main.selected.source.types">
-			        <option value="" disabled>-- Search Type --</option>
+			    <select class="form-control" ng-model="main.selected.choice"
+			            ng-options="t.name for t in main.selected.searchType.choices">
+			        <option value="" disabled>-- Options --</option>
 			    </select>
 			</div>
 		</div>
